@@ -24,13 +24,21 @@ def home():
     return redirect(url_for('all'))
 
 
-@APP.route('/donations/')
+@APP.route('/donations/', methods=['GET', 'POST'])
 def all():
     """
     Display a list of all the donations
     :return: The all donations page
     """
+    if request.method == 'POST':
+        donor = Donor.select().where(Donor.name == request.form['donor_name']).get()
+        print("Donor ID ", donor.id)
+        donations = Donation.select().where(Donation.donor_id == donor.id)
+        print("Dontation", donations)
+        return render_template('donations.jinja2', donations=donations)
+
     donations = Donation.select()
+    print("All donations ", donations)
     return render_template('donations.jinja2', donations=donations)
 
 
